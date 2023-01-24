@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+ARGS=$@
+PROG=$(basename $0)
+SCRIPT_PATH=$(dirname $(readlink -f $0))
+
+echo $PROG
+echo $SCRIPT_PATH
+
+STACK=
+
+PS3='Select resource: '
+
+resources=($(find $SCRIPT_PATH/* -maxdepth 1 -type d -print0 | xargs -0))
+resources+=("Quit")
+select res in "${resources[@]##*/}"; do
+    if [[ $REPLY == "${#resources[@]}" ]]; then
+        echo 'Goodbye' >&2
+        exit
+    else
+        STACK=$res
+        break;
+    fi
+    # case $res in
+    #     "python-fastapi")
+    #         echo "FASTAPI"
+    #         ;;
+    #     "ruby")
+    #         echo "RUBY"
+    #         ;;
+    #     *) echo "invalid option $REPLY";;
+    # esac
+done
+
+echo $STACK
+
+echo "=> Copying the .devcontainer contents."
+echo "=> Source       : $(pwd)"
+echo "=> Destination  : $SCRIPT_PATH/$STACK"
+cp -r $(pwd)/.devcontainer $SCRIPT_PATH/$STACK
+echo "=> COMPLETE!"
