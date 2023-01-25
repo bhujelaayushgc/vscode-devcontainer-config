@@ -7,7 +7,7 @@ install_extension() {
 }
 
 echo "--- Dev container setup ---"
-pip3 install autopep8
+pip install autopep8
 
 # solargraph download-core
 
